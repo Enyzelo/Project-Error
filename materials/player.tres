@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://b4gwd5h7ixvct"]
+
+[ext_resource type="Texture2D" uid="uid://rhq8yt883io" path="res://textures/chowder.png" id="1_8tomb"]
+
+[resource]
+albedo_texture = ExtResource("1_8tomb")
+emission = Color(0.188235, 0.254902, 1, 1)
+emission_energy_multiplier = 0.0
+uv1_triplanar = true
+uv1_triplanar_sharpness = 7.88337
+uv1_world_triplanar = true
+disable_receive_shadows = true
