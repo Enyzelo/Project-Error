@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://b4gwd5h7ixvct"]
+
+[ext_resource type="Texture2D" uid="uid://bhtuls7ueeubq" path="res://textures/dgbyzur-74575180-addb-4c01-a579-00507082039d.png" id="1_86pgr"]
+
+[resource]
+albedo_color = Color(0.972549, 0, 0.85098, 1)
+albedo_texture = ExtResource("1_86pgr")
+roughness = 0.0
+emission = Color(0.188235, 0.254902, 1, 1)
+emission_energy_multiplier = 0.0
+clearcoat_roughness = 0.0
+uv1_scale = Vector3(0.3, 0.3, 0.3)
+uv1_triplanar = true
+uv1_world_triplanar = true
