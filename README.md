@@ -6,5 +6,8 @@
 The game is not made to stand out from other games but to add fun functions that would allow players to use their creativity when it comes to weapon modification
 
 # Devs
+Development start date 2023/12/14
+Second build 2023/12/15
+
 Enyzelo
 TNWC
