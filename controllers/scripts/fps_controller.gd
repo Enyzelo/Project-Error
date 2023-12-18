@@ -1,8 +1,9 @@
 extends CharacterBody3D
 
 @export var SPEED_DEFAULT : float = 5.0
-@export var SPEED_CROUCH : float = 2.0
+@export var SPEED_CROUCH : float = 3.0
 @export var SPEED_SPRINT : float = 7.0
+@export var SPEED_WALK : float = 2.0
 @export var TOGGLE_CROUCH : bool = false
 @export var JUMP_VELOCITY : float = 4.5
 @export_range(5, 20, 0.1) var CROUCH_SPEED : float = 15.0
@@ -37,8 +38,18 @@ func _input(event):
 	if event.is_action_pressed("exit"):
 		get_tree().quit()
 	
-	if event.is_action_pressed("+sprint"):
+	if event.is_action_pressed("+sprint") and _is_crouching == false:
 		set_movement_speed("sprinting")
+	elif event.is_action_released("+sprint"):
+		if _is_crouching == true:
+			set_movement_speed("+crouch")
+		elif _is_crouching == false:
+			set_movement_speed("default")
+	
+	if event.is_action_pressed("+walk"):
+		set_movement_speed("walk")
+	elif event.is_action_released("+walk"):
+		set_movement_speed("default")
 	
 	if event.is_action_pressed("+crouch"):
 		toggle_crouch()
@@ -110,6 +121,8 @@ func set_movement_speed(state : String):
 			_speed = SPEED_CROUCH
 		"sprinting":
 			_speed = SPEED_SPRINT
+		"walk":
+			_speed = SPEED_WALK
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -132,8 +145,12 @@ func _physics_process(delta):
 		velocity.x = move_toward(velocity.x, 0, _speed)
 		velocity.z = move_toward(velocity.z, 0, _speed)
 
-	move_and_slide()
-
 func _process(delta):
+	
+	Global.debug.add_property("MovementSpeed",_speed, 1)
+	Global.debug.add_property("MouseRotation",_mouse_rotation, 2)
 	# Update camera movement based on mouse movement
 	_update_camera(delta)
+	
+	# Temporarely moved here for now.
+	move_and_slide()
