@@ -1,6 +1,7 @@
 extends Node
 
 var debug # Reference to DebugPanel for debug property assignment
+var player
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

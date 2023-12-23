@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://iip8iuw01mx6"]
+
+[ext_resource type="Texture2D" uid="uid://dn51iiwwvly78" path="res://textures/venice_dawn_1_4k.exr" id="1_5w133"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_huyxa"]
+sky_horizon_color = Color(0.164706, 0.168627, 0.176471, 1)
+sky_cover = ExtResource("1_5w133")
+
+[sub_resource type="Sky" id="Sky_tmgqu"]
+sky_material = SubResource("ProceduralSkyMaterial_huyxa")
+
+[sub_resource type="Environment" id="Environment_qhott"]
+background_mode = 2
+sky = SubResource("Sky_tmgqu")
+
+[node name="Environment" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_qhott")

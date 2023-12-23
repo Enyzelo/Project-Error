@@ -4,6 +4,8 @@ extends CharacterBody3D
 @export var SPEED_CROUCH : float = 3.0
 @export var SPEED_SPRINT : float = 7.0
 @export var SPEED_WALK : float = 2.0
+@export var ACCELERATION : float = 0.1
+@export var DECELERATION : float = 0.25
 @export var TOGGLE_CROUCH : bool = false
 @export var JUMP_VELOCITY : float = 4.5
 @export_range(5, 20, 0.1) var CROUCH_SPEED : float = 15.0
@@ -81,7 +83,8 @@ func _update_camera(delta):
 	_tilt_input = 0.0
 
 func _ready():
-
+	
+	Global.player = self
 	# Get mouse input
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	CROUCH_SHAPECAST.add_exception($".")
@@ -92,7 +95,7 @@ func toggle_crouch():
 		crouching(false)
 	elif _is_crouching == false:
 		crouching(true)
-		
+
 func uncrouch_check():
 	if CROUCH_SHAPECAST.is_colliding() == false:
 		crouching(false)
@@ -139,11 +142,11 @@ func _physics_process(delta):
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
 	if direction:
-		velocity.x = direction.x * _speed
-		velocity.z = direction.z * _speed
+		velocity.x = lerp(velocity.x, direction.x * _speed, ACCELERATION)
+		velocity.z = lerp(velocity.z, direction.z * _speed, ACCELERATION)
 	else:
-		velocity.x = move_toward(velocity.x, 0, _speed)
-		velocity.z = move_toward(velocity.z, 0, _speed)
+		velocity.x = move_toward(velocity.x, 0, DECELERATION)
+		velocity.z = move_toward(velocity.z, 0, DECELERATION)
 
 func _process(delta):
 	
@@ -151,6 +154,4 @@ func _process(delta):
 	Global.debug.add_property("MouseRotation",_mouse_rotation, 2)
 	# Update camera movement based on mouse movement
 	_update_camera(delta)
-	
-	# Temporarely moved here for now.
 	move_and_slide()

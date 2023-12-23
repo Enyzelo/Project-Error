@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="001 - Basic Setup"
-run/main_scene="res://levels/level_001.tscn"
+config/name="FPS"
+run/main_scene="res://levels/test_world.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -23,7 +23,9 @@ Global="*res://controllers/scripts/global.gd"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/size/mode=4
+window/size/mode=2
+window/size/resizable=false
+window/size/borderless=true
 window/size/always_on_top=true
 window/stretch/mode="viewport"
 window/vsync/vsync_mode=0
