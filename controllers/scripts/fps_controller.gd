@@ -1,3 +1,4 @@
+class_name Player
 extends CharacterBody3D
 
 @export var SPEED_DEFAULT : float = 5.0
@@ -6,9 +7,7 @@ extends CharacterBody3D
 @export var SPEED_WALK : float = 2.0
 @export var ACCELERATION : float = 0.1
 @export var DECELERATION : float = 0.25
-@export var TOGGLE_CROUCH : bool = false
 @export var JUMP_VELOCITY : float = 4.5
-@export_range(5, 20, 0.1) var CROUCH_SPEED : float = 15.0
 @export var MOUSE_SENSITIVITY : float = 1
 @export var M_YAW : float = 0.22
 @export var TILT_LOWER_LIMIT := deg_to_rad(-90.0)
@@ -26,11 +25,21 @@ var _player_rotation : Vector3
 var _camera_rotation : Vector3
 var _is_crouching : bool = false
 
-# Define first and third person cam
-var current_cam_state = cam_state.FIRST
-enum cam_state{FIRST, THIRD}
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+
+# Define first and third person cam
+enum cam_state{FIRST, THIRD}
+var current_cam_state = cam_state.FIRST
+
+func togglecam():
+	match current_cam_state:
+		cam_state.THIRD:
+			$CameraController/Camera3D.make_current()
+			current_cam_state = cam_state.FIRST
+		cam_state.FIRST:
+			$CameraController/SpringArm3D/Camera3D.make_current()
+			current_cam_state = cam_state.THIRD
 
 func _unhandled_input(event: InputEvent) -> void:
 	_mouse_input = event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
@@ -42,31 +51,6 @@ func _input(event):
 	
 	if event.is_action_pressed("exit"):
 		get_tree().quit()
-	
-	if event.is_action_pressed("+sprint") and _is_crouching == false:
-		set_movement_speed("sprinting")
-	elif event.is_action_released("+sprint"):
-		if _is_crouching == true:
-			set_movement_speed("+crouch")
-		elif _is_crouching == false:
-			set_movement_speed("default")
-	
-	if event.is_action_pressed("+walk"):
-		set_movement_speed("walk")
-	elif event.is_action_released("+walk"):
-		set_movement_speed("default")
-	
-	if event.is_action_pressed("+crouch"):
-		toggle_crouch()
-	
-	if event.is_action_pressed("+crouch") and _is_crouching == false and TOGGLE_CROUCH == false:
-		crouching(true)
-	
-	if event.is_action_released("+crouch") and TOGGLE_CROUCH == false:
-		if CROUCH_SHAPECAST.is_colliding() == false:
-			crouching(false)
-		elif CROUCH_SHAPECAST.is_colliding() == true:
-			uncrouch_check()
 	
 	# Check for imput to toggle between first and third person cam
 	if event.is_action_pressed("togglecam"):
@@ -97,53 +81,25 @@ func _ready():
 	CROUCH_SHAPECAST.add_exception($".")
 	_speed = SPEED_DEFAULT
 
-func toggle_crouch():
-	if _is_crouching == true and CROUCH_SHAPECAST.is_colliding() == false:
-		crouching(false)
-	elif _is_crouching == false:
-		crouching(true)
-
-func uncrouch_check():
-	if CROUCH_SHAPECAST.is_colliding() == false:
-		crouching(false)
-	if CROUCH_SHAPECAST.is_colliding() == true:
-		await get_tree().create_timer(0.1).timeout
-		uncrouch_check()
-
-func crouching(state : bool):
-	match state:
-		true:
-			ANIMATIONPLAYER.play("crouch", 0, CROUCH_SPEED)
-			set_movement_speed("crouching")
-		false:
-			ANIMATIONPLAYER.play("crouch", 0, -CROUCH_SPEED, true)
-			set_movement_speed("default")
-
-func _on_animation_player_animation_started(anim_name):
-	if anim_name == "crouch":
-		_is_crouching = !_is_crouching
-
-func set_movement_speed(state : String):
-	match state:
-		"default":
-			_speed = SPEED_DEFAULT
-		"crouching":
-			_speed = SPEED_CROUCH
-		"sprinting":
-			_speed = SPEED_SPRINT
-		"walk":
-			_speed = SPEED_WALK
-
 func _physics_process(delta):
+	# Handle Jump.
+	if Input.is_action_just_pressed("+jump") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+
+func _process(delta):
+	
+	Global.debug.add_property("MovementSpeed",_speed, 1)
+	Global.debug.add_property("MouseRotation",_mouse_rotation, 2)
+	# Update camera movement based on mouse movement
+	_update_camera(delta)
+
+func update_gravity(delta) -> void:
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
-	# Handle Jump.
-	if Input.is_action_just_pressed("+jump") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
-	
-	# Get the input direction and handle the movement/deceleration.
+func update_input(speed: float, acceleration: float, deceleration: float) -> void:
+		# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	var input_dir = Input.get_vector("+left", "+right", "+forward", "+backward")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -155,19 +111,82 @@ func _physics_process(delta):
 		velocity.x = move_toward(velocity.x, 0, DECELERATION)
 		velocity.z = move_toward(velocity.z, 0, DECELERATION)
 
-func _process(delta):
-	
-	Global.debug.add_property("MovementSpeed",_speed, 1)
-	Global.debug.add_property("MouseRotation",_mouse_rotation, 2)
-	# Update camera movement based on mouse movement
-	_update_camera(delta)
+func update_velocity() -> void:
 	move_and_slide()
 
-func togglecam():
-	match current_cam_state:
-		cam_state.THIRD:
-			$CameraController/cam_1.make_current()
-			current_cam_state = cam_state.FIRST
-		cam_state.FIRST:
-			$CameraController/SpringArm3D/cam_2.make_current()
-			current_cam_state = cam_state.THIRD
+
+
+
+
+
+
+
+
+
+
+
+
+#@export var TOGGLE_CROUCH : bool = false
+#@export_range(5, 20, 0.1) var CROUCH_SPEED : float = 15.0
+
+	#if event.is_action_pressed("+sprint") and _is_crouching == false:
+		#set_movement_speed("sprinting")
+	#elif event.is_action_released("+sprint"):
+		#if _is_crouching == true:
+			#set_movement_speed("+crouch")
+		#elif _is_crouching == false:
+			#set_movement_speed("default")
+	#
+	#if event.is_action_pressed("+walk"):
+		#set_movement_speed("walk")
+	#elif event.is_action_released("+walk"):
+		#set_movement_speed("default")
+	#
+	#if event.is_action_pressed("+crouch"):
+		#toggle_crouch()
+	
+	#if event.is_action_pressed("+crouch") and _is_crouching == false and TOGGLE_CROUCH == false:
+		#crouching(true)
+	#
+	#if event.is_action_released("+crouch") and TOGGLE_CROUCH == false:
+		#if CROUCH_SHAPECAST.is_colliding() == false:
+			#crouching(false)
+		#elif CROUCH_SHAPECAST.is_colliding() == true:
+			#uncrouch_check()
+
+#func toggle_crouch():
+	#if _is_crouching == true and CROUCH_SHAPECAST.is_colliding() == false:
+		#crouching(false)
+	#elif _is_crouching == false:
+		#crouching(true)
+
+#func uncrouch_check():
+	#if CROUCH_SHAPECAST.is_colliding() == false:
+		#crouching(false)
+	#if CROUCH_SHAPECAST.is_colliding() == true:
+		#await get_tree().create_timer(0.1).timeout
+		#uncrouch_check()
+
+#func crouching(state : bool):
+	#match state:
+		#true:
+			#ANIMATIONPLAYER.play("crouch", 0, CROUCH_SPEED)
+			#set_movement_speed("crouching")
+		#false:
+			#ANIMATIONPLAYER.play("crouch", 0, -CROUCH_SPEED, true)
+			#set_movement_speed("default")
+
+#func _on_animation_player_animation_started(anim_name):
+	#if anim_name == "crouch":
+		#_is_crouching = !_is_crouching
+
+#func set_movement_speed(state : String):
+	#match state:
+		#"default":
+			#_speed = SPEED_DEFAULT
+		#"crouching":
+			#_speed = SPEED_CROUCH
+		#"sprinting":
+			#_speed = SPEED_SPRINT
+		#"walk":
+			#_speed = SPEED_WALK
