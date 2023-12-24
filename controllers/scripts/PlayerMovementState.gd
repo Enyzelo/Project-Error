@@ -1,12 +1,14 @@
-extends Node
+class_name PlayerMovementState
+extends State
 
-var debug # Reference to DebugPanel for debug property assignment
-var player
+var PLAYER = Player
+var ANIMATION : AnimationPlayer
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
-
+	await owner.ready
+	PLAYER = owner as Player
+	ANIMATION = PLAYER.ANIMATIONPLAYER
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):

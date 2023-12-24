@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bnfyf08rxkp8"]
+[gd_scene load_steps=18 format=3 uid="uid://bnfyf08rxkp8"]
 
 [ext_resource type="Script" path="res://controllers/scripts/fps_controller.gd" id="1_pgc1p"]
 [ext_resource type="Material" uid="uid://b4gwd5h7ixvct" path="res://materials/player.tres" id="2_gldw4"]
@@ -7,7 +7,6 @@
 [ext_resource type="Script" path="res://controllers/scripts/debug.gd" id="5_h7abe"]
 [ext_resource type="Script" path="res://controllers/scripts/state_machine.gd" id="6_wlw27"]
 [ext_resource type="Script" path="res://controllers/scripts/IdlePlayerState.gd" id="7_h6g0j"]
-[ext_resource type="Script" path="res://controllers/scripts/CrouchingPlayerState.gd" id="8_1c2p0"]
 [ext_resource type="Script" path="res://controllers/scripts/WalkingPlayerState.gd" id="8_fl12g"]
 [ext_resource type="Script" path="res://controllers/scripts/SprintingPlayerState.gd" id="10_mjvdn"]
 
@@ -161,25 +160,30 @@ _data = {
 [node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("CAMERA_CONTROLLER", "ANIMATIONPLAYER", "CROUCH_SHAPECAST")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0047698, 0.0307597, 0.00066185)
 script = ExtResource("1_pgc1p")
-CAMERA_CONTROLLER = NodePath("CameraController/cam_1")
+CAMERA_CONTROLLER = NodePath("CameraController/Camera3D")
 ANIMATIONPLAYER = NodePath("AnimationPlayer")
 CROUCH_SHAPECAST = NodePath("ShapeCast3D")
 
 [node name="CameraController" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
-[node name="cam_1" type="Camera3D" parent="CameraController"]
+[node name="Camera3D" type="Camera3D" parent="CameraController"]
 fov = 90.0
 
-[node name="ReflectionProbe" type="ReflectionProbe" parent="CameraController/cam_1"]
+[node name="ReflectionProbe" type="ReflectionProbe" parent="CameraController/Camera3D"]
 enable_shadows = true
 
 [node name="SpringArm3D" type="SpringArm3D" parent="CameraController"]
-spring_length = 3.0
-margin = 0.5
+transform = Transform3D(1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, 0, 0, 0)
+spring_length = 6.0
+margin = 0.7
 
-[node name="cam_2" type="Camera3D" parent="CameraController/SpringArm3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.99355)
+[node name="Camera3D" type="Camera3D" parent="CameraController/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 2.23517e-07, 0, -2.23517e-07, 1, -0.00142539, 0.000548124, 5.96058)
+fov = 90.0
+
+[node name="ReflectionProbe" type="ReflectionProbe" parent="CameraController/SpringArm3D/Camera3D"]
+enable_shadows = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -259,19 +263,13 @@ layout_mode = 2
 script = ExtResource("6_wlw27")
 CURRENT_STATE = NodePath("IdlePlayerState")
 
-[node name="CrouchingPlayerState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("ANIMATION")]
-script = ExtResource("8_1c2p0")
-ANIMATION = NodePath("../../AnimationPlayer")
-
 [node name="IdlePlayerState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource("7_h6g0j")
 
-[node name="WalkingPlayerState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("ANIMATION")]
+[node name="WalkingPlayerState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource("8_fl12g")
-ANIMATION = NodePath("../../AnimationPlayer")
 
-[node name="SprintingPlayerState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("ANIMATION")]
+[node name="SprintingPlayerState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource("10_mjvdn")
-ANIMATION = NodePath("../../AnimationPlayer")
 
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]
