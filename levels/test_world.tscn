@@ -16,6 +16,7 @@ background_mode = 2
 sky = SubResource("Sky_5nrar")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xgwlr"]
+albedo_color = Color(0, 0.286275, 0.619608, 1)
 albedo_texture = ExtResource("1_6lwpx")
 
 [sub_resource type="BoxMesh" id="BoxMesh_ab7ey"]

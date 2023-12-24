@@ -266,5 +266,6 @@ ANIMATION = NodePath("../../AnimationPlayer")
 [node name="SprintingPlayerState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("ANIMATION")]
 script = ExtResource("10_mjvdn")
 ANIMATION = NodePath("../../AnimationPlayer")
+TOP_ANIM_SPEED = null
 
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]
