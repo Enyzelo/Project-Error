@@ -26,6 +26,9 @@ var _player_rotation : Vector3
 var _camera_rotation : Vector3
 var _is_crouching : bool = false
 
+# Define first and third person cam
+var current_cam_state = cam_state.FIRST
+enum cam_state{FIRST, THIRD}
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -64,6 +67,10 @@ func _input(event):
 			crouching(false)
 		elif CROUCH_SHAPECAST.is_colliding() == true:
 			uncrouch_check()
+	
+	# Check for imput to toggle between first and third person cam
+	if event.is_action_pressed("togglecam"):
+		togglecam()
 
 func _update_camera(delta):
 	# Rotates camera using euler rotation
@@ -155,3 +162,12 @@ func _process(delta):
 	# Update camera movement based on mouse movement
 	_update_camera(delta)
 	move_and_slide()
+
+func togglecam():
+	match current_cam_state:
+		cam_state.THIRD:
+			$CameraController/cam_1.make_current()
+			current_cam_state = cam_state.FIRST
+		cam_state.FIRST:
+			$CameraController/SpringArm3D/cam_2.make_current()
+			current_cam_state = cam_state.THIRD

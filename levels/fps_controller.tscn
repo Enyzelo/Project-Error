@@ -161,18 +161,25 @@ _data = {
 [node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("CAMERA_CONTROLLER", "ANIMATIONPLAYER", "CROUCH_SHAPECAST")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0047698, 0.0307597, 0.00066185)
 script = ExtResource("1_pgc1p")
-CAMERA_CONTROLLER = NodePath("CameraController/Camera3D")
+CAMERA_CONTROLLER = NodePath("CameraController/cam_1")
 ANIMATIONPLAYER = NodePath("AnimationPlayer")
 CROUCH_SHAPECAST = NodePath("ShapeCast3D")
 
 [node name="CameraController" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
-[node name="Camera3D" type="Camera3D" parent="CameraController"]
+[node name="cam_1" type="Camera3D" parent="CameraController"]
 fov = 90.0
 
-[node name="ReflectionProbe" type="ReflectionProbe" parent="CameraController/Camera3D"]
+[node name="ReflectionProbe" type="ReflectionProbe" parent="CameraController/cam_1"]
 enable_shadows = true
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraController"]
+spring_length = 3.0
+margin = 0.5
+
+[node name="cam_2" type="Camera3D" parent="CameraController/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.99355)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
