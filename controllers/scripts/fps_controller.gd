@@ -95,7 +95,6 @@ func _process(delta):
 	Global.debug.add_property("Decel", DECELERATION, 6)
 	Global.debug.add_property("G", gravity, 7)
 	Global.debug.add_property("OVHC",CROUCH_SHAPECAST.is_colliding(), 8)
-	Global.debug.add_property("Res: ", DisplayServer.get_primary_screen(), 9)
 	# Update camera movement based on mouse movement
 	_update_camera(delta)
 
