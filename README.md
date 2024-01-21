@@ -1,4 +1,6 @@
 # FPS Preview
+![image](https://github.com/Enyzelo/FPS1/assets/28166876/5383fea4-342e-4690-941a-d5cfda869da7)
+
 ![image](https://github.com/Enyzelo/FPS1/assets/28166876/527d1bf4-4bd6-4f3c-843f-9f3a6b7a2334)
 
 
