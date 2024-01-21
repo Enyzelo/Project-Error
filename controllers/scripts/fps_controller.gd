@@ -88,8 +88,14 @@ func _physics_process(delta):
 
 func _process(delta):
 	
-	Global.debug.add_property("MovementSpeed",_speed, 1)
-	Global.debug.add_property("MouseRotation",_mouse_rotation, 2)
+	Global.debug.add_property("MovSpeed",_speed, 2)
+	Global.debug.add_property("MRotation",_mouse_rotation, 3)
+	Global.debug.add_property("Velocity",velocity, 4)
+	Global.debug.add_property("Accel", ACCELERATION, 5)
+	Global.debug.add_property("Decel", DECELERATION, 6)
+	Global.debug.add_property("G", gravity, 7)
+	Global.debug.add_property("OVHC",CROUCH_SHAPECAST.is_colliding(), 8)
+	Global.debug.add_property("Res: ", DisplayServer.get_primary_screen(), 9)
 	# Update camera movement based on mouse movement
 	_update_camera(delta)
 
@@ -98,7 +104,7 @@ func update_gravity(delta) -> void:
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
-func update_input(speed: float, acceleration: float, deceleration: float) -> void:
+func update_input(_speed: float, ACCELERATION: float, DECELERATION: float) -> void:
 		# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	var input_dir = Input.get_vector("+left", "+right", "+forward", "+backward")
@@ -113,80 +119,3 @@ func update_input(speed: float, acceleration: float, deceleration: float) -> voi
 
 func update_velocity() -> void:
 	move_and_slide()
-
-
-
-
-
-
-
-
-
-
-
-
-
-#@export var TOGGLE_CROUCH : bool = false
-#@export_range(5, 20, 0.1) var CROUCH_SPEED : float = 15.0
-
-	#if event.is_action_pressed("+sprint") and _is_crouching == false:
-		#set_movement_speed("sprinting")
-	#elif event.is_action_released("+sprint"):
-		#if _is_crouching == true:
-			#set_movement_speed("+crouch")
-		#elif _is_crouching == false:
-			#set_movement_speed("default")
-	#
-	#if event.is_action_pressed("+walk"):
-		#set_movement_speed("walk")
-	#elif event.is_action_released("+walk"):
-		#set_movement_speed("default")
-	#
-	#if event.is_action_pressed("+crouch"):
-		#toggle_crouch()
-	
-	#if event.is_action_pressed("+crouch") and _is_crouching == false and TOGGLE_CROUCH == false:
-		#crouching(true)
-	#
-	#if event.is_action_released("+crouch") and TOGGLE_CROUCH == false:
-		#if CROUCH_SHAPECAST.is_colliding() == false:
-			#crouching(false)
-		#elif CROUCH_SHAPECAST.is_colliding() == true:
-			#uncrouch_check()
-
-#func toggle_crouch():
-	#if _is_crouching == true and CROUCH_SHAPECAST.is_colliding() == false:
-		#crouching(false)
-	#elif _is_crouching == false:
-		#crouching(true)
-
-#func uncrouch_check():
-	#if CROUCH_SHAPECAST.is_colliding() == false:
-		#crouching(false)
-	#if CROUCH_SHAPECAST.is_colliding() == true:
-		#await get_tree().create_timer(0.1).timeout
-		#uncrouch_check()
-
-#func crouching(state : bool):
-	#match state:
-		#true:
-			#ANIMATIONPLAYER.play("crouch", 0, CROUCH_SPEED)
-			#set_movement_speed("crouching")
-		#false:
-			#ANIMATIONPLAYER.play("crouch", 0, -CROUCH_SPEED, true)
-			#set_movement_speed("default")
-
-#func _on_animation_player_animation_started(anim_name):
-	#if anim_name == "crouch":
-		#_is_crouching = !_is_crouching
-
-#func set_movement_speed(state : String):
-	#match state:
-		#"default":
-			#_speed = SPEED_DEFAULT
-		#"crouching":
-			#_speed = SPEED_CROUCH
-		#"sprinting":
-			#_speed = SPEED_SPRINT
-		#"walk":
-			#_speed = SPEED_WALK

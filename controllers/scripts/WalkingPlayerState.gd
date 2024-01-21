@@ -7,7 +7,7 @@ extends PlayerMovementState
 @export var TOP_ANIM_SPEED: float = 1.6
 
 func enter() -> void:
-	ANIMATION.play("walk",-1.0,1.0)
+	ANIMATION.play("walk_unarmed",-1.0,1.0)
 	Global.player._speed = Global.player.SPEED_DEFAULT
 
 func update(_delta):

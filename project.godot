@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="FPS"
-run/main_scene="res://levels/test_world.tscn"
+run/main_scene="res://levels/control.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -21,9 +21,20 @@ Global="*res://controllers/scripts/global.gd"
 
 [display]
 
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=4
+window/size/initial_position_type=0
+window/size/borderless=true
 window/size/always_on_top=true
+window/stretch/mode="canvas_items"
+window/stretch/aspect="ignore"
 window/vsync/vsync_mode=0
 window/physics_ticks_per_second=60
+
+[filesystem]
+
+import/blender/enabled=false
 
 [input]
 
@@ -88,5 +99,4 @@ togglecam={
 
 textures/default_filters/anisotropic_filtering_level=4
 textures/default_filters/texture_mipmap_bias=-1.0
-anti_aliasing/quality/msaa_3d=3
-anti_aliasing/quality/screen_space_aa=1
+anti_aliasing/quality/use_taa=true

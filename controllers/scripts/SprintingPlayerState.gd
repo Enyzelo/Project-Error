@@ -1,13 +1,13 @@
 class_name SprintingPlayerState
 extends PlayerMovementState
 
-@export var SPEED : float = 5.0
+@export var SPEED : float = 8.0
 @export var ACCELERATION : float = 0.1
 @export var DECELERATION : float = 0.25
 @export var TOP_ANIM_SPEED: float = 1.6
 
 func enter() -> void:
-	ANIMATION.play("sprint",0.5,1.0)
+	ANIMATION.play("run_unarmed",0.5,1.0)
 
 func update(_delta):
 	PLAYER.update_gravity(_delta)
@@ -16,7 +16,10 @@ func update(_delta):
 	
 	set_animation_speed(PLAYER.velocity.length())
 	
-	if Input.is_action_just_released("+sprint"):
+	if Input.is_action_just_pressed("+crouch"):
+		transition.emit("CrouchingPlayerState")
+	
+	if Input.is_action_just_released("+sprint") and PLAYER.is_on_floor():
 		transition.emit("WalkingPlayerState")
 
 func set_animation_speed(spd) -> void:
